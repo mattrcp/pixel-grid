@@ -5,6 +5,7 @@ import { ColorPalettePanel } from '@/components/sidebar/ColorPalette';
 import { ToolSelectorPanel } from '@/components/sidebar/ToolSelector';
 import { SymmetryPanel } from '@/components/sidebar/SymmetryPanel';
 import { LayerPanel } from '@/components/sidebar/LayerPanel';
+import { RandomFillPanel } from '@/components/sidebar/RandomFillPanel';
 import { GradientPanel } from '@/components/sidebar/GradientPanel';
 import { BackgroundPanel } from '@/components/sidebar/BackgroundPanel';
 import { ExportPanel } from '@/components/sidebar/ExportPanel';
@@ -22,6 +23,7 @@ export function Sidebar() {
         <GridSettingsPanel />
         <ColorPalettePanel />
         <SymmetryPanel />
+        <RandomFillPanel />
         <GradientPanel />
         <LayerPanel />
         <BackgroundPanel />
