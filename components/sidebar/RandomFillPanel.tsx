@@ -4,7 +4,6 @@ import { useState } from 'react';
 import { useEditor } from '@/context/EditorContext';
 import { Section } from '@/components/ui/Section';
 import { Slider } from '@/components/ui/Slider';
-import { Toggle } from '@/components/ui/Toggle';
 import { Pixel } from '@/lib/types';
 
 type FillRegion = 'full' | 'selection' | 'shape';
@@ -96,7 +95,7 @@ function pointToSegDist(
 export function RandomFillPanel() {
   const { state, dispatch } = useEditor();
   const [density, setDensity] = useState(0.3);
-  const [useSwatches, setUseSwatches] = useState(true);
+  const [colorMode, setColorMode] = useState<'black' | 'color' | 'swatches'>('black');
 
   const [fillRegion, setFillRegion] = useState<FillRegion>('full');
 
@@ -135,9 +134,11 @@ export function RandomFillPanel() {
 
   const handleGenerate = () => {
     const { rows, cols } = state.gridSettings;
-    const colors = useSwatches && state.savedColors.length > 0
-      ? state.savedColors
-      : [state.activeColor];
+    const colors = colorMode === 'black'
+      ? ['#000000']
+      : colorMode === 'swatches' && state.savedColors.length > 0
+        ? state.savedColors
+        : [state.activeColor];
 
     const pixels: { row: number; col: number; pixel: Pixel | null }[] = [];
 
@@ -170,15 +171,28 @@ export function RandomFillPanel() {
         displayValue={`${Math.round(density * 100)}%`}
       />
 
-      <Toggle
-        label="Use swatch colors"
-        checked={useSwatches}
-        onChange={setUseSwatches}
-      />
-
-      {!useSwatches && (
-        <p className="text-[10px] text-tertiary">Uses active color only</p>
-      )}
+      <div className="space-y-1">
+        <label className="text-xs text-secondary">Color</label>
+        <div className="flex gap-1">
+          {([
+            { value: 'black' as const, label: 'Black' },
+            { value: 'color' as const, label: 'Active' },
+            { value: 'swatches' as const, label: 'Swatches' },
+          ]).map(opt => (
+            <button
+              key={opt.value}
+              onClick={() => setColorMode(opt.value)}
+              className={`flex-1 rounded-md px-2 py-1.5 text-xs font-medium transition-all ${
+                colorMode === opt.value
+                  ? 'bg-accent text-white shadow-sm'
+                  : 'bg-black/[0.04] text-secondary hover:bg-black/[0.08]'
+              }`}
+            >
+              {opt.label}
+            </button>
+          ))}
+        </div>
+      </div>
 
       {/* Region */}
       <div className="space-y-1">
